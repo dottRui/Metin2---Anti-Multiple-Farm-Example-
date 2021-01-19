@@ -39,10 +39,6 @@ auto CAntiMultipleFarm::Login(std::string sMAIf, DWORD dwPID, int8_t forceState)
 	__BuildBlockDropsReloadPacakage(sMAIf);
 }
 
-/*
-	Usado para inicializar o estado dos drops de uma personagem que dá login.
-	Basicamente verifica se pode ou não inicializar os drops.
-*/
 auto CAntiMultipleFarm::__GetPlayerStartupDropState(std::string sMAIf) -> bool
 {
 	auto it = m_map_BlockDrops.find(sMAIf);
