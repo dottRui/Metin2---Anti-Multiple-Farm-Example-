@@ -25,7 +25,6 @@ class CAntiMultipleFarm : public singleton<CAntiMultipleFarm>
 		auto	Logout(std::string sMAIf, DWORD dwPID, bool is_warping) -> void;
 		auto	GetPlayerDropState(std::string sMAIf, DWORD dwPID) -> bool;
 		auto	SendBlockDropStatusChange(std::string sMAIf, std::vector<DWORD> dwPIDS) -> void;
-		auto	PrintPlayerDropState(std::string sMAIf, LPCHARACTER ch) -> void;
 		
 		inline auto P2PLogin(std::string sMAIf, DWORD dwPID, int8_t forceState) -> void { Login(sMAIf, dwPID, forceState); }
 		inline auto P2PLogout(std::string sMAIf, DWORD dwPID, bool is_warping = false) -> void { Logout(sMAIf, dwPID, is_warping); }
