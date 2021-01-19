@@ -17,11 +17,6 @@
 CAntiMultipleFarm::CAntiMultipleFarm() {};
 CAntiMultipleFarm::~CAntiMultipleFarm() {};
 
-/*
-	Quando dá login, vem aqui diretamente por chamada do core atual e passa aqui nas P2P communications;
-	Dá build ao packet de info, elimando todos os registos antigos e trocando pelos novos ao pessoal do core
-	que chama a função
-*/
 auto CAntiMultipleFarm::Login(std::string sMAIf, DWORD dwPID, int8_t forceState) -> void
 {
 	auto it = m_map_BlockDrops.find(sMAIf);
@@ -63,11 +58,6 @@ auto CAntiMultipleFarm::__GetPlayerStartupDropState(std::string sMAIf) -> bool
 	return (u8TotalDropCount >= MULTIPLE_FARM_MAX_ACCOUNT);
 }
 
-/*
-	Quando dá logout, vem aqui diretamente por chamada do core atual e passa aqui nas P2P communications.
-	Retira o jogador da lista de jogadores ligados no mesmo pc, e dá build ao packet que limpa todos os registos
-	da parte do cliente e manda os novos, sem o jogador.
-*/
 auto CAntiMultipleFarm::Logout(std::string sMAIf, DWORD dwPID, bool is_warping) -> void
 {
 	// /*fix quando um jogador se teleporta*/
@@ -88,10 +78,6 @@ auto CAntiMultipleFarm::Logout(std::string sMAIf, DWORD dwPID, bool is_warping) 
 	__BuildBlockDropsReloadPacakage(sMAIf);
 }
 
-/*
-	Retorna o estado dos drops do jogador de PID -> dwPID, esta função é chamada sempre que se quer
-	verificar se o jogador pode ou não dropar alguma coisa
-*/
 auto CAntiMultipleFarm::GetPlayerDropState(std::string sMAIf, DWORD dwPID) -> bool
 {
 	auto iterate_map = m_map_BlockDrops.find(sMAIf);
@@ -107,10 +93,6 @@ auto CAntiMultipleFarm::GetPlayerDropState(std::string sMAIf, DWORD dwPID) -> bo
 	return false;
 }
 
-/*
-	Verifica se o estado dos drops dos jogadores registados no computador são válidos, caso não forem
-	corrige, normalmente esta verificação é usada ANTES de mandar de dar build ao packet das informações
-*/
 auto CAntiMultipleFarm::__ReloadBlockDropStates(std::string sMAIf) -> void
 {
 	auto it = m_map_BlockDrops.find(sMAIf);
@@ -146,10 +128,6 @@ auto CAntiMultipleFarm::__ReloadBlockDropStates(std::string sMAIf) -> void
 	}
 }
 
-/*
-	Packet dinâmico usado para mandar as informações de jogadores e estados registados
-	no computador.
-*/
 auto CAntiMultipleFarm::__BuildBlockDropsReloadPacakage(std::string sMAIf) -> void
 {
 	/*fix cross-fire between server stages*/
@@ -204,9 +182,6 @@ auto CAntiMultipleFarm::__BuildBlockDropsReloadPacakage(std::string sMAIf) -> vo
 	}
 }
 
-/*
-	Usado para alterar os estados dos drops dos jogadores, ____ainda não está estável____ 
-*/
 auto CAntiMultipleFarm::SendBlockDropStatusChange(std::string sMAIf, std::vector<DWORD> dwPIDS) -> void
 {
 	{
@@ -220,20 +195,4 @@ auto CAntiMultipleFarm::SendBlockDropStatusChange(std::string sMAIf, std::vector
 	
 	__ReloadBlockDropStates(sMAIf);
 	__BuildBlockDropsReloadPacakage(sMAIf);
-}
-
-/*
-	Dá print aos jogadores ligados no mesmo computador e o seu estado
-*/
-auto CAntiMultipleFarm::PrintPlayerDropState(std::string sMAIf, LPCHARACTER ch) -> void
-{
-	if (!ch) return;
-	
-	auto iterate_map = m_map_BlockDrops.find(sMAIf);
-	if (iterate_map == m_map_BlockDrops.end()) return;
-	
-	ch->ChatPacket(CHAT_TYPE_INFO, "------------------------------------");
-	for (auto &sR : iterate_map->second)
-		ch->ChatPacket(CHAT_TYPE_INFO, "PID do jogador: %d || Estado: %d (1 - Bloqueado / 0 - Desbloqueado)", sR.dwPID, (int)sR.bDropState);
-	ch->ChatPacket(CHAT_TYPE_INFO, "------------------------------------");
 }
